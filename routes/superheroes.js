@@ -1,11 +1,14 @@
 const express = require("express");
-const { searchSuperHeroByName } = require("../controllers/superheroes");
+const {
+  searchSuperHeroByName,
+  addSuperHero
+} = require("../controllers/superheroes");
 const router = new express.Router();
-const pool = require("../db/db");
 
 //routes to search super hero by name from superhero api
-router.get("/superhero/:name", searchSuperHeroByName);
+router.get("/api/superhero/:name", searchSuperHeroByName);
 
-//add super hero to database to view them later
+//add super hero to database (favourites) to view them later
+router.post("/api/superhero", addSuperHero);
 
 module.exports = router;

@@ -1,0 +1,22 @@
+GET http://localhost:5000/api/superhero/abomination
+
+### ADD SUPERHERO TO DB
+POST http://localhost:5000/api/superhero HTTP/1.1
+Content-Type: application/json
+
+{
+    "superhero" : {
+      "id": "4",
+      "name": "Abomination",
+      "powerstats": {
+        "intelligence": "63",
+        "strength": "80",
+        "speed": "53",
+        "durability": "90",
+        "power": "62",
+        "combat": "95"
+      },
+      "image": "https://www.superherodb.com/pictures2/portraits/10/100/1.jpg"
+    }
+}
+###

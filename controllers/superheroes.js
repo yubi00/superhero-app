@@ -1,5 +1,6 @@
 const { checkPattern } = require("../utils/pattern");
 const { searchSuperHero } = require("../utils/superheroes");
+const pool = require("../db/db");
 
 //Search superhero by name
 const searchSuperHeroByName = async (req, res) => {
@@ -30,6 +31,29 @@ const searchSuperHeroByName = async (req, res) => {
   }
 };
 
+// add superhero to database (favourties) to view them later
+const addSuperHero = async (req, res) => {
+  const { superhero } = req.body;
+
+  try {
+    //Insert into superheroes table
+    const newSuperHero = await pool.query(
+      "INSERT INTO superheroes(superhero) VALUES ($1) RETURNING *",
+      [JSON.stringify(superhero)]
+    );
+    res.status(200).send({
+      success: true,
+      superhero: newSuperHero.rows[0]
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
 module.exports = {
-  searchSuperHeroByName
+  searchSuperHeroByName,
+  addSuperHero
 };
