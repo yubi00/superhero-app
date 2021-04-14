@@ -86,7 +86,8 @@ const updateSuperHero = async (req, res) => {
       `SELECT * FROM superheroes WHERE  id = '${id}'`
     );
 
-    if (superhero.rows.length === 0) throw new Error("superhero doesnot exist");
+    if (superhero.rows.length === 0)
+      throw new Error(`superhero with the featured id ${id} doesnot exist`);
 
     //if id exist, then update the powerstats
     const updatedPowerStats = {
@@ -125,7 +126,34 @@ const updateSuperHero = async (req, res) => {
   }
 };
 
-const deleteSuperHero = async (req, res) => {};
+const deleteSuperHero = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    //check if the superhero with the params id exist
+    const superhero = await pool.query(
+      `SELECT * FROM superheroes WHERE  id = '${id}'`
+    );
+
+    if (superhero.rowCount === 0)
+      throw new Error(`superhero with the id ${id} doesnot exist`);
+
+    //if exist, delete it from db, making it unfeatured again
+    await pool.query("DELETE FROM superheroes WHERE id = $1", [id]);
+
+    //fetch all remaining featured superheroes
+    const superheroes = await pool.query("SELECT * FROM superheroes");
+    res.status(200).send({
+      success: true,
+      data: superheroes.rows
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message
+    });
+  }
+};
 
 module.exports = {
   searchSuperHeroByName,
