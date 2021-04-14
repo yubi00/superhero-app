@@ -31,19 +31,13 @@ const searchSuperHeroByName = async (req, res) => {
   }
 };
 
-// add superhero to database (favourties) to view them later
-const addSuperHero = async (req, res) => {
-  const { superhero } = req.body;
-
+//fetch all featured superheroes from db
+const fetchSuperHeroes = async (req, res) => {
   try {
-    //Insert into superheroes table
-    const newSuperHero = await pool.query(
-      "INSERT INTO superheroes(superhero) VALUES ($1) RETURNING *",
-      [JSON.stringify(superhero)]
-    );
+    const superheroes = await pool.query("SELECT * FROM superheroes");
     res.status(200).send({
       success: true,
-      superhero: newSuperHero.rows[0]
+      data: superheroes.rows
     });
   } catch (err) {
     res.status(500).send({
@@ -53,7 +47,90 @@ const addSuperHero = async (req, res) => {
   }
 };
 
+// add superhero to database (favourties) to view them later
+const addSuperHero = async (req, res) => {
+  const { superhero } = req.body;
+
+  try {
+    //add it to the db only if it doesnot already exist in the db
+    //throw error saying superhero already exist
+    //find the superhero with the id superhero.id
+    const exist = await pool.query(
+      `SELECT * FROM superheroes WHERE superhero ->> 'id' = '${superhero.id}'`
+    );
+    if (exist.rows.length !== 0) throw new Error("superhero already featured");
+    //Insert into superheroes table
+    const newSuperHero = await pool.query(
+      "INSERT INTO superheroes(superhero) VALUES ($1) RETURNING *",
+      [JSON.stringify(superhero)]
+    );
+    res.status(201).send({
+      success: true,
+      data: newSuperHero.rows[0]
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+//can only update featured/saved superheroes
+const updateSuperHero = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    //check if superhero with the params id exist in the db
+    const superhero = await pool.query(
+      `SELECT * FROM superheroes WHERE  id = '${id}'`
+    );
+
+    if (superhero.rows.length === 0) throw new Error("superhero doesnot exist");
+
+    //if id exist, then update the powerstats
+    const updatedPowerStats = {
+      ...superhero.rows[0].superhero.powerstats,
+      ...req.body.powerstats
+    };
+
+    const updatedSuperHero = {
+      ...superhero.rows[0],
+      superhero: {
+        ...superhero.rows[0].superhero,
+        powerstats: updatedPowerStats
+      }
+    };
+
+    // //query to update the powerstats data
+    await pool.query("UPDATE superheroes SET superhero = $1 WHERE id = $2 ", [
+      JSON.stringify(updatedSuperHero.superhero),
+      id
+    ]);
+
+    //get the updated superhero
+    const updated = await pool.query(
+      `SELECT * FROM superheroes WHERE  id = '${id}'`
+    );
+
+    res.status(200).send({
+      success: true,
+      data: updated.rows[0]
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+const deleteSuperHero = async (req, res) => {};
+
 module.exports = {
   searchSuperHeroByName,
-  addSuperHero
+  fetchSuperHeroes,
+  addSuperHero,
+  updateSuperHero,
+  deleteSuperHero
 };
