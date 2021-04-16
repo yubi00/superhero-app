@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import FavouriteButton from "../../Favourites/FavouriteButton/FavouriteButton";
+import UpdateForm from "../../UpdateForm/UpdateForm";
 
 const ListItem = ({ superhero, type }) => {
   const [more, setMore] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { name, image } = type === "featured" ? superhero.superhero : superhero;
   const { intelligence, strength, speed, durability, power, combat } =
     type === "featured" ? superhero.superhero.powerstats : superhero.powerstats;
+
+  const toggle = () => {
+    setShowModal(!showModal);
+  };
+
   return (
     <div>
       <img
@@ -23,6 +30,7 @@ const ListItem = ({ superhero, type }) => {
       {more && (
         <div>
           <h3>Powerstats</h3>
+          {type === "featured" && <button onClick={toggle}>edit</button>}
           <p>
             {" "}
             Intelligence: <span>{intelligence}</span>{" "}
@@ -48,6 +56,13 @@ const ListItem = ({ superhero, type }) => {
             Combat: <span> {combat} </span>
           </p>
         </div>
+      )}
+      {showModal && (
+        <UpdateForm
+          showModal={showModal}
+          superhero={superhero}
+          toggle={toggle}
+        />
       )}
     </div>
   );
