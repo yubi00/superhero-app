@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { fetchSearchedResults } from "../../api/api";
+import List from "../List/List";
 import SearchInput from "../SearchItem/SearchInput/SearchInput";
 
 function App() {
@@ -14,24 +15,20 @@ function App() {
     }
   );
 
-  //handle on change search text
   const searchByText = (name) => {
     setSearchText(name);
   };
 
   return (
     <div className='App'>
-      <h1>Super Hero App</h1>
       <SearchInput searchByText={searchByText} />
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : isError ? (
-        <p> {error} </p>
-      ) : Array.isArray(data) ? (
-        data.map((superhero) => <p key={superhero.id}> {superhero.name} </p>)
-      ) : (
-        <p> {data} </p>
-      )}
+      <List
+        isLoading={isLoading}
+        error={error}
+        isError={isError}
+        data={data}
+        type='searchedlist'
+      />
     </div>
   );
 }
