@@ -43,7 +43,7 @@ export const addToFavourites = async (superhero) => {
 
 export const updatePowerStats = async ({ id, powerstats }) => {
   try {
-    await axios.put(
+    const res = await axios.put(
       `${process.env.REACT_APP_BASE_URL}/api/superhero/${id}`,
       {
         powerstats
@@ -54,7 +54,7 @@ export const updatePowerStats = async ({ id, powerstats }) => {
         }
       }
     );
-    return true;
+    return res.data.data;
   } catch (err) {
     return err.response.data.message;
   }

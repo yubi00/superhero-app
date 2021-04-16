@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { QueryClient, useMutation } from "react-query";
 import {
   Button,
@@ -16,7 +15,6 @@ import {
 import { updatePowerStats } from "../../api/api";
 
 const UpdateForm = ({ showModal, toggle, superhero }) => {
-  const history = useHistory();
   const {
     intelligence,
     strength,
@@ -30,10 +28,14 @@ const UpdateForm = ({ showModal, toggle, superhero }) => {
   const { mutate, isLoading, isError, error, isSuccess } = useMutation(
     updatePowerStats,
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        console.log(data);
         queryClient.invalidateQueries("featured");
-        history.push("/favourites");
         toggle();
+      },
+      //always refetch after error or success
+      onSettled: () => {
+        queryClient.invalidateQueries("featured");
       }
     }
   );
@@ -64,6 +66,7 @@ const UpdateForm = ({ showModal, toggle, superhero }) => {
       combat: psCombat
     };
     mutate({ id: superhero.id, powerstats });
+    window.location.reload();
   };
 
   return (
