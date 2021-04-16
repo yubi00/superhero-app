@@ -132,7 +132,7 @@ const deleteSuperHero = async (req, res) => {
   try {
     //check if the superhero with the params id exist
     const superhero = await pool.query(
-      `SELECT * FROM superheroes WHERE  id = '${id}'`
+      `SELECT * FROM superheroes WHERE id = '${id}'`
     );
 
     if (superhero.rowCount === 0)

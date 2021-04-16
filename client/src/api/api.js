@@ -21,3 +21,33 @@ export const fetchFavourites = async () => {
     return err.response.data.message;
   }
 };
+
+export const addToFavourites = async (superhero) => {
+  try {
+    await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/superhero`,
+      {
+        superhero
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return true;
+  } catch (err) {
+    return err.response.data.message;
+  }
+};
+
+export const updatePowerStats = async (id, powerstats) => {};
+
+export const removeFromFavourites = async (id) => {
+  try {
+    await axios.delete(`${process.env.REACT_APP_BASE_URL}/api/superhero/${id}`);
+    return true;
+  } catch (err) {
+    return err.response.data.message;
+  }
+};
