@@ -18,12 +18,12 @@ Clone this repository onto your local machine. You are require to install nodejs
    `npm run client-install`
 
 4. Create a .env file that contains all your postgres connections and Superhero api variable as follows:
-
-PG_USER=YOUR POSTGRES USERNAME
-PG_PASSWORD=YOUR POSTGRES PASSWORD
-PG_HOST=localhost
-PG_DB=YOUR POSTGRES DB
-BASE_URL=https://superheroapi.com/api/SUPERHERO_API_ACCESS_KEY
+   `
+   PG_USER=YOUR POSTGRES USERNAME
+   PG_PASSWORD=YOUR POSTGRES PASSWORD
+   PG_HOST=localhost
+   PG_DB=YOUR POSTGRES DB
+   BASE_URL=https://superheroapi.com/api/SUPERHERO_API_ACCESS_KEY
 
 5. To run only your server (api) which runs on port 5000 (http://localhost:5000/) for testing in REST client tool such as postman
    `npm run server`
