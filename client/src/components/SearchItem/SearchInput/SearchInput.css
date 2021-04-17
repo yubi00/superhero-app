@@ -1,8 +1,8 @@
 .search-input {
   letter-spacing: 0.25em;
-  font-size: 5rem;
   outline: none;
   border: none;
+  font-size: 2rem !important;
 }
 
 .search-input:focus,

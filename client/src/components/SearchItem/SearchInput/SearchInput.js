@@ -10,7 +10,7 @@ const SearchInput = ({ searchByText }) => {
   return (
     <Container>
       <Input
-        className='p-4 h1 search-input'
+        className='p-4 search-input mb-2'
         type='text'
         placeholder='Search Superhero....'
         onChange={onChangeHandler}

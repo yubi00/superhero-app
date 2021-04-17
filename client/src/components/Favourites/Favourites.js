@@ -1,5 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
+import { Container } from "reactstrap";
 import { fetchFavourites } from "../../api/api";
 import List from "../List/List";
 
@@ -9,8 +10,8 @@ const Favourites = () => {
     fetchFavourites
   );
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>{error}</p>;
+  if (isLoading) return <Container className='h1'>Loading...</Container>;
+  if (isError) return <Container className='h1'>{error}</Container>;
 
   return (
     <div>
