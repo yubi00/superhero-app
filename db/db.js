@@ -1,6 +1,7 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
+//config for dev
 const devConfig = {
   user: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
@@ -9,6 +10,7 @@ const devConfig = {
   database: process.env.PG_DB
 };
 
+//postgres config for production
 const prodConfig = {
   connectionString: process.env.DATABASE_URL, //heroku addon
   ssl: {
