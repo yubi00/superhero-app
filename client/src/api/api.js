@@ -2,9 +2,7 @@ import axios from "axios";
 
 export const fetchSearchedResults = async (name) => {
   try {
-    const res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/api/superhero/${name}`
-    );
+    const res = await axios.get(`/api/superhero/${name}`);
     return res.data.data;
   } catch (err) {
     return err.response.data.message;
@@ -13,9 +11,7 @@ export const fetchSearchedResults = async (name) => {
 
 export const fetchFavourites = async () => {
   try {
-    const res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/api/superheroes`
-    );
+    const res = await axios.get(`/api/superheroes`);
     return res.data.data;
   } catch (err) {
     return err.response.data.message;
@@ -25,7 +21,7 @@ export const fetchFavourites = async () => {
 export const addToFavourites = async (superhero) => {
   try {
     await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/api/superhero`,
+      `/api/superhero`,
       {
         superhero
       },
@@ -44,7 +40,7 @@ export const addToFavourites = async (superhero) => {
 export const updatePowerStats = async ({ id, powerstats }) => {
   try {
     const res = await axios.put(
-      `${process.env.REACT_APP_BASE_URL}/api/superhero/${id}`,
+      `/api/superhero/${id}`,
       {
         powerstats
       },
@@ -62,7 +58,7 @@ export const updatePowerStats = async ({ id, powerstats }) => {
 
 export const removeFromFavourites = async (id) => {
   try {
-    await axios.delete(`${process.env.REACT_APP_BASE_URL}/api/superhero/${id}`);
+    await axios.delete(`/api/superhero/${id}`);
     return true;
   } catch (err) {
     return err.response.data.message;
