@@ -1,0 +1,22 @@
+.header {
+  font-size: 3rem;
+  letter-spacing: 0.05em;
+}
+
+.link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.link:focus,
+.link:hover,
+.link:visited,
+.link:link,
+.link:active {
+  text-decoration: none;
+  color: white;
+}
+
+.link:hover {
+  color: red;
+}

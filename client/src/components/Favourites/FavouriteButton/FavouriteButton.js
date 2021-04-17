@@ -1,6 +1,7 @@
 import React from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { addToFavourites, removeFromFavourites } from "../../../api/api";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 
 const FavouriteButton = ({ type, superhero }) => {
   const queryClient = useQueryClient();
@@ -31,9 +32,10 @@ const FavouriteButton = ({ type, superhero }) => {
         <p>Added...</p>
       ) : null}
 
-      <button onClick={type === "featured" ? deleteSuperHero : addSuperHero}>
-        {type === "featured" ? "Remove from fav" : "Add to favourties"}
-      </button>
+      <FavoriteIcon
+        className={type === "featured" ? "text-danger" : "text-white"}
+        onClick={type === "featured" ? deleteSuperHero : addSuperHero}
+      />
     </div>
   );
 };

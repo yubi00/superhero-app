@@ -8,11 +8,12 @@ const Favourites = () => {
     "featured",
     fetchFavourites
   );
+
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>{error}</p>;
+
   return (
     <div>
-      <h1>Favourite SuperHeroes</h1>
       <List
         isLoading={isLoading}
         error={error}

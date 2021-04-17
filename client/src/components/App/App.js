@@ -3,6 +3,8 @@ import { useQuery } from "react-query";
 import { fetchSearchedResults } from "../../api/api";
 import List from "../List/List";
 import SearchInput from "../SearchItem/SearchInput/SearchInput";
+import "bootstrap/dist/css/bootstrap.css";
+import "./App.css";
 
 function App() {
   const [text, setSearchText] = useState("");

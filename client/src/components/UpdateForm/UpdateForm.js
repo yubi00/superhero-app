@@ -13,8 +13,9 @@ import {
   UncontrolledAlert
 } from "reactstrap";
 import { updatePowerStats } from "../../api/api";
+import "./UploadForm.css";
 
-const UpdateForm = ({ showModal, toggle, superhero }) => {
+const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
   const {
     intelligence,
     strength,
@@ -28,15 +29,39 @@ const UpdateForm = ({ showModal, toggle, superhero }) => {
   const { mutate, isLoading, isError, error, isSuccess } = useMutation(
     updatePowerStats,
     {
-      onSuccess: (data) => {
-        console.log(data);
-        queryClient.invalidateQueries("featured");
-        toggle();
+      onMutate: (newData) => {
+        //cancel any outgoing queries
+        queryClient.cancelQueries("featured");
+
+        //optimistic update
+        const prev = queryClient.getQueryData("featured");
+        console.log("prev: ", prev);
+        queryClient.setQueryData(
+          "featured",
+          (old) =>
+            Array.isArray(old) &&
+            old.map((item) => {
+              if (item.id === superhero.id) {
+                return {
+                  ...item,
+                  superhero: {
+                    ...item.superhero,
+                    powerstats: {
+                      ...newData.powerstats
+                    }
+                  }
+                };
+              } else {
+                return item;
+              }
+            })
+        );
+
+        //return prev values if mutate fails for some reason
+        return prev;
       },
-      //always refetch after error or success
-      onSettled: () => {
-        queryClient.invalidateQueries("featured");
-      }
+      onError: (error, newData, rollback) => rollback(),
+      onSettled: () => queryClient.invalidateQueries("featured")
     }
   );
 
@@ -66,13 +91,18 @@ const UpdateForm = ({ showModal, toggle, superhero }) => {
       combat: psCombat
     };
     mutate({ id: superhero.id, powerstats });
+    setMore(false);
+    toggle();
+
     window.location.reload();
   };
 
   return (
     <Modal isOpen={showModal} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Edit Power Stats</ModalHeader>
-      <ModalBody>
+      <ModalHeader toggle={toggle} className='bg-dark mb-0'>
+        Edit Power Stats
+      </ModalHeader>
+      <ModalBody className='bg-dark mt-0'>
         {isLoading ? (
           <Alert color='info'> Loading...</Alert>
         ) : isError ? (
@@ -83,7 +113,7 @@ const UpdateForm = ({ showModal, toggle, superhero }) => {
             Updated Success{" "}
           </UncontrolledAlert>
         ) : null}
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className='form p-2 h3'>
           <FormGroup>
             <Label for='intelligence'>Intelligence</Label>
             <Input
@@ -157,7 +187,7 @@ const UpdateForm = ({ showModal, toggle, superhero }) => {
             />
           </FormGroup>
           <div>
-            <Button color='primary'>Update</Button>{" "}
+            <Button color='danger'>Update</Button>{" "}
             <Button color='secondary' onClick={toggle}>
               Cancel
             </Button>

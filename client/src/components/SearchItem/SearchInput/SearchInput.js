@@ -1,4 +1,6 @@
 import React from "react";
+import { Container, Input } from "reactstrap";
+import "./SearchInput.css";
 
 const SearchInput = ({ searchByText }) => {
   const onChangeHandler = (e) => {
@@ -6,13 +8,14 @@ const SearchInput = ({ searchByText }) => {
   };
 
   return (
-    <div>
-      <input
+    <Container>
+      <Input
+        className='p-4 h1 search-input'
         type='text'
         placeholder='Search Superhero....'
         onChange={onChangeHandler}
       />
-    </div>
+    </Container>
   );
 };
 
