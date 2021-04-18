@@ -1,16 +1,37 @@
 import React, { useState } from "react";
-import FavouriteButton from "../../Favourites/FavouriteButton/FavouriteButton";
+import { useMutation, useQueryClient } from "react-query";
+import { addToFavourites, removeFromFavourites } from "../../../api/api";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import EditIcon from "@material-ui/icons/Edit";
 import UpdateForm from "../../UpdateForm/UpdateForm";
+import PowerStats from "../PowerStats/PowerStats";
 
 const ListItem = ({ superhero, type }) => {
+  const queryClient = useQueryClient();
   const [more, setMore] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { name, image } = type === "featured" ? superhero.superhero : superhero;
   const { intelligence, strength, speed, durability, power, combat } =
     type === "featured" ? superhero.superhero.powerstats : superhero.powerstats;
+
+  const { isLoading, isError, error, mutate, isSuccess } = useMutation(
+    type === "featured" ? removeFromFavourites : addToFavourites,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("featured");
+      }
+    }
+  );
+
+  const deleteSuperHero = () => {
+    mutate(superhero.id);
+  };
+
+  const addSuperHero = () => {
+    mutate(superhero);
+  };
 
   const toggle = () => {
     setShowModal(!showModal);
@@ -27,8 +48,22 @@ const ListItem = ({ superhero, type }) => {
       />
       <div className='d-flex flex-column justify-content-center align-items-center mt-1'>
         <p className='h2'> {name} </p>
+
+        {isLoading ? (
+          <p> {type === "featured" ? "Removing" : "Adding"} </p>
+        ) : isError ? (
+          <p> {error.message} </p>
+        ) : isSuccess ? (
+          <p>{type === "featured" ? "Removed" : "Added"}</p>
+        ) : null}
+
         <div className='d-flex justify-content-between text-white'>
-          <FavouriteButton type={type} superhero={superhero} />
+          <FavoriteIcon
+            className={type === "featured" ? "text-danger" : "text-white"}
+            type={type}
+            superhero={superhero}
+            onClick={type === "featured" ? deleteSuperHero : addSuperHero}
+          />
           {!more ? (
             <ExpandMoreIcon onClick={() => setMore((prev) => !prev)} />
           ) : (
@@ -36,6 +71,7 @@ const ListItem = ({ superhero, type }) => {
           )}
         </div>
       </div>
+
       {more && (
         <div>
           <div className='d-flex m-3 align-items-center'>
@@ -49,34 +85,17 @@ const ListItem = ({ superhero, type }) => {
               </EditIcon>
             )}
           </div>
-          <div className='d-flex flex-column justify-content-center text-white h4'>
-            <p>
-              {" "}
-              Intelligence: <span>{intelligence}</span>{" "}
-            </p>
-            <p>
-              {" "}
-              Strength: <span>{strength}</span>{" "}
-            </p>
-            <p>
-              {" "}
-              Speed: <span>{speed}</span>{" "}
-            </p>
-            <p>
-              {" "}
-              Durability: <span>{durability}</span>{" "}
-            </p>
-            <p>
-              {" "}
-              Power: <span>{power}</span>{" "}
-            </p>
-            <p>
-              {" "}
-              Combat: <span> {combat} </span>
-            </p>
-          </div>
+          <PowerStats
+            intelligence={intelligence}
+            speed={speed}
+            strength={strength}
+            combat={combat}
+            power={power}
+            durability={durability}
+          />
         </div>
       )}
+
       {showModal && (
         <UpdateForm
           setMore={setMore}
