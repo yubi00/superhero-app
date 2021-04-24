@@ -2,6 +2,7 @@ const express = require("express");
 const {
   searchSuperHeroByName,
   addSuperHero,
+  getSuperHero,
   updateSuperHero,
   fetchSuperHeroes,
   deleteSuperHero
@@ -13,6 +14,9 @@ router.get("/api/superhero/:name", searchSuperHeroByName);
 
 //api endpoint to fetch all featured superheroes
 router.get("/api/superheroes", fetchSuperHeroes);
+
+//api endpoint to fetch a particular superhero based on id
+router.get("/api/featuredsuperhero/:id", getSuperHero);
 
 //api end point to add super hero to database (favourites) to view them later
 router.post("/api/superhero", addSuperHero);

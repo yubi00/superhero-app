@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { QueryClient, useMutation } from "react-query";
+import { useUpdate } from "../../hooks/useUpdate";
 import {
   Button,
   Modal,
@@ -12,7 +12,6 @@ import {
   Alert,
   UncontrolledAlert
 } from "reactstrap";
-import { updatePowerStats } from "../../api/api";
 import "./UploadForm.css";
 
 const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
@@ -24,46 +23,13 @@ const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
     power,
     combat
   } = superhero.superhero.powerstats;
-
-  const queryClient = new QueryClient();
-  const { mutate, isLoading, isError, error, isSuccess } = useMutation(
-    updatePowerStats,
-    {
-      onMutate: (newData) => {
-        //cancel any outgoing queries
-        queryClient.cancelQueries("featured");
-
-        //optimistic update
-        const prev = queryClient.getQueryData("featured");
-        console.log("prev: ", prev);
-        queryClient.setQueryData(
-          "featured",
-          (old) =>
-            Array.isArray(old) &&
-            old.map((item) => {
-              if (item.id === superhero.id) {
-                return {
-                  ...item,
-                  superhero: {
-                    ...item.superhero,
-                    powerstats: {
-                      ...newData.powerstats
-                    }
-                  }
-                };
-              } else {
-                return item;
-              }
-            })
-        );
-
-        //return prev values if mutate fails for some reason
-        return prev;
-      },
-      onError: (error, newData, rollback) => rollback(),
-      onSettled: () => queryClient.invalidateQueries("featured")
-    }
-  );
+  const {
+    mutate,
+    isLoading: isMutating,
+    isError,
+    error,
+    isSuccess
+  } = useUpdate();
 
   const [psIntelligence, setIntelligence] = useState(intelligence);
   const [psStrength, setStrength] = useState(strength);
@@ -91,10 +57,6 @@ const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
       combat: psCombat
     };
     mutate({ id: superhero.id, powerstats });
-    setMore(false);
-    toggle();
-
-    window.location.reload();
   };
 
   return (
@@ -103,7 +65,7 @@ const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
         Edit Power Stats
       </ModalHeader>
       <ModalBody className='bg-dark mt-0'>
-        {isLoading ? (
+        {isMutating ? (
           <Alert color='info'> Loading...</Alert>
         ) : isError ? (
           <UncontrolledAlert color='danger'>{error.message}</UncontrolledAlert>
@@ -187,7 +149,9 @@ const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
             />
           </FormGroup>
           <div>
-            <Button color='danger'>Update</Button>{" "}
+            <Button color='danger'>
+              {isMutating ? "Updating..." : isSuccess ? "Updated" : "Update"}
+            </Button>{" "}
             <Button color='secondary' onClick={toggle}>
               Cancel
             </Button>

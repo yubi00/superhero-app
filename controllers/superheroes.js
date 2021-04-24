@@ -47,6 +47,31 @@ const fetchSuperHeroes = async (req, res) => {
   }
 };
 
+//fetch a particular featured superhero by id
+const getSuperHero = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    //check if superhero with the params id exist in the db
+    const superhero = await pool.query(
+      `SELECT * FROM superheroes WHERE  id = '${id}'`
+    );
+
+    if (superhero.rowCount === 0)
+      throw new Error(`superhero with the featured id ${id} doesnot exist`);
+
+    res.status(200).send({
+      success: true,
+      data: superhero.rows[0]
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
 // add superhero to database (favourties) to view them later
 const addSuperHero = async (req, res) => {
   const { superhero } = req.body;
@@ -158,6 +183,7 @@ const deleteSuperHero = async (req, res) => {
 module.exports = {
   searchSuperHeroByName,
   fetchSuperHeroes,
+  getSuperHero,
   addSuperHero,
   updateSuperHero,
   deleteSuperHero

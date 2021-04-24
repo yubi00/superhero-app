@@ -1,32 +1,37 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { addToFavourites, removeFromFavourites } from "../../../api/api";
+import { Link, useHistory } from "react-router-dom";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import EditIcon from "@material-ui/icons/Edit";
 import UpdateForm from "../../UpdateForm/UpdateForm";
 import PowerStats from "../PowerStats/PowerStats";
+import { useCreate } from "../../../hooks/useCreate";
+import { useDelete } from "../../../hooks/useDelete";
 
 const ListItem = ({ superhero, type }) => {
-  const queryClient = useQueryClient();
+  const history = useHistory();
+
   const [more, setMore] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const { name, image } = type === "featured" ? superhero.superhero : superhero;
+  const { name, image } =
+    type === "favourites" ? superhero.superhero : superhero;
   const { intelligence, strength, speed, durability, power, combat } =
-    type === "featured" ? superhero.superhero.powerstats : superhero.powerstats;
+    type === "favourites"
+      ? superhero.superhero.powerstats
+      : superhero.powerstats;
 
-  const { isLoading, isError, error, mutate, isSuccess } = useMutation(
-    type === "featured" ? removeFromFavourites : addToFavourites,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("featured");
-      }
-    }
-  );
+  const { isLoading, isError, error, mutate, isSuccess } = useCreate();
+  const {
+    isLoading: isDeleting,
+    isError: isDeleteError,
+    error: deleteError,
+    mutate: deleteMutate,
+    isSuccess: deleteSuccess
+  } = useDelete();
 
   const deleteSuperHero = () => {
-    mutate(superhero.id);
+    deleteMutate(superhero.id);
   };
 
   const addSuperHero = () => {
@@ -34,6 +39,9 @@ const ListItem = ({ superhero, type }) => {
   };
 
   const toggle = () => {
+    if (showModal) {
+      history.push("/favourites");
+    }
     setShowModal(!showModal);
   };
 
@@ -50,19 +58,27 @@ const ListItem = ({ superhero, type }) => {
         <p className='h2'> {name} </p>
 
         {isLoading ? (
-          <p> {type === "featured" ? "Removing" : "Adding"} </p>
+          <p> Adding... </p>
         ) : isError ? (
           <p> {error.message} </p>
         ) : isSuccess ? (
-          <p>{type === "featured" ? "Removed" : "Added"}</p>
+          <p>Added</p>
+        ) : null}
+
+        {isDeleting ? (
+          <p> Removing... </p>
+        ) : isDeleteError ? (
+          <p> {deleteError.message} </p>
+        ) : deleteSuccess ? (
+          <p>Removed</p>
         ) : null}
 
         <div className='d-flex justify-content-between text-white'>
           <FavoriteIcon
-            className={type === "featured" ? "text-danger" : "text-white"}
+            className={type === "favourites" ? "text-danger" : "text-white"}
             type={type}
             superhero={superhero}
-            onClick={type === "featured" ? deleteSuperHero : addSuperHero}
+            onClick={type === "favourites" ? deleteSuperHero : addSuperHero}
           />
           {!more ? (
             <ExpandMoreIcon onClick={() => setMore((prev) => !prev)} />
@@ -76,13 +92,16 @@ const ListItem = ({ superhero, type }) => {
         <div>
           <div className='d-flex m-3 align-items-center'>
             <h3 className='mx-2'>Powerstats</h3>
-            {type === "featured" && (
-              <EditIcon
-                onClick={toggle}
-                className='text-white bg-dark h3 rounded'
-              >
-                edit
-              </EditIcon>
+            {type === "favourites" && (
+              <Link to={`/favourites/${superhero.id}`}>
+                {" "}
+                <EditIcon
+                  onClick={toggle}
+                  className='text-white bg-dark h3 rounded'
+                >
+                  edit
+                </EditIcon>{" "}
+              </Link>
             )}
           </div>
           <PowerStats

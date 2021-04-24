@@ -1,14 +1,10 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { Container } from "reactstrap";
-import { fetchFavourites } from "../../api/api";
+import { useFeaturedList } from "../../hooks/useFeaturedList";
 import List from "../List/List";
 
 const Favourites = () => {
-  const { data, isLoading, isError, error } = useQuery(
-    "featured",
-    fetchFavourites
-  );
+  const { data, isLoading, isError, error } = useFeaturedList();
 
   if (isLoading) return <Container className='h1'>Loading...</Container>;
   if (isError) return <Container className='h1'>{error}</Container>;
@@ -20,7 +16,7 @@ const Favourites = () => {
         error={error}
         isError={isError}
         data={data}
-        type='featured'
+        type='favourites'
       />
     </div>
   );

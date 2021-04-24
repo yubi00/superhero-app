@@ -18,6 +18,15 @@ export const fetchFavourites = async () => {
   }
 };
 
+export const getFavourite = async (id) => {
+  try {
+    const res = await axios.get(`/api/featuredsuperhero/${id}`);
+    return res.data.data;
+  } catch (err) {
+    return err.response.data.message;
+  }
+};
+
 export const addToFavourites = async (superhero) => {
   try {
     await axios.post(
@@ -58,8 +67,8 @@ export const updatePowerStats = async ({ id, powerstats }) => {
 
 export const removeFromFavourites = async (id) => {
   try {
-    await axios.delete(`/api/superhero/${id}`);
-    return true;
+    const res = await axios.delete(`/api/superhero/${id}`);
+    return res.data.data;
   } catch (err) {
     return err.response.data.message;
   }
