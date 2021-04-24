@@ -1,6 +1,6 @@
 SUPERHERO APP
 
-This application allows users to search superhero which fetches superhero from Superhero API and they can either add or remoe to or from their favorites superheroes. This application is built using full PERN (Postgres, Express, React, NodeJS) stacks and deployed onto heroku.
+This application allows users to search superhero which fetches superhero from Superhero API and they can either add or remove to or from their favorites superheroes. This application is built using full PERN (Postgres, Express, React, NodeJS) stacks and deployed onto heroku.
 
 Link for demo: https://superhero-pern.herokuapp.com/
 
@@ -18,7 +18,7 @@ Clone this repository onto your local machine. You are require to install nodejs
    `npm run client-install`
 
 4. Create a .env file that contains all your postgres connections and Superhero api variable as follows:
-   ` PG_USER=YOUR POSTGRES USERNAME <br/> PG_PASSWORD=YOUR POSTGRES PASSWORD <br/> PG_HOST=localhost <br/> PG_DB=YOUR POSTGRES DB <br/> BASE_URL=https://superheroapi.com/api/SUPERHERO_API_ACCESS_KEY `
+   `PG_USER=YOUR POSTGRES USERNAME <br/> PG_PASSWORD=YOUR POSTGRES PASSWORD <br/> PG_HOST=localhost <br/> PG_DB=YOUR POSTGRES DB <br/> BASE_URL=https://superheroapi.com/api/SUPERHERO_API_ACCESS_KEY`
 
 5. To run only your server (api) which runs on port 5000 (http://localhost:5000/) for testing in REST client tool such as postman
    `npm run server`

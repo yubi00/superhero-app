@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useUpdate } from "../../hooks/useUpdate";
 import {
   Button,
@@ -13,16 +13,9 @@ import {
   UncontrolledAlert
 } from "reactstrap";
 import "./UploadForm.css";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
-  const {
-    intelligence,
-    strength,
-    speed,
-    durability,
-    power,
-    combat
-  } = superhero.superhero.powerstats;
   const {
     mutate,
     isLoading: isMutating,
@@ -31,40 +24,35 @@ const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
     isSuccess
   } = useUpdate();
 
-  const [psIntelligence, setIntelligence] = useState(intelligence);
-  const [psStrength, setStrength] = useState(strength);
-  const [psSpeed, setSpeed] = useState(speed);
-  const [psDurability, setDurability] = useState(durability);
-  const [psPower, setPower] = useState(power);
-  const [psCombat, setCombat] = useState(combat);
-
-  const onIntelliChange = (e) => setIntelligence(e.target.value);
-  const onStrengthChange = (e) => setStrength(e.target.value);
-  const onSpeedChange = (e) => setSpeed(e.target.value);
-  const onDurabilityChange = (e) => setDurability(e.target.value);
-  const onPowerChange = (e) => setPower(e.target.value);
-  const onCombatChange = (e) => setCombat(e.target.value);
+  const {
+    values: powerstats,
+    onChangeHandler,
+    error: validationError
+  } = useFormValidation(superhero.superhero.powerstats);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const powerstats = {
-      intelligence: psIntelligence,
-      strength: psStrength,
-      durability: psDurability,
-      speed: psSpeed,
-      power: psPower,
-      combat: psCombat
-    };
     mutate({ id: superhero.id, powerstats });
+    setMore(false);
   };
 
   return (
     <Modal isOpen={showModal} toggle={toggle}>
-      <ModalHeader toggle={toggle} className='bg-dark mb-0'>
-        Edit Power Stats
+      <ModalHeader toggle={toggle} className='bg-dark mb-0 w-100'>
+        Editing{" "}
+        <span className='text-white font-weight-bold h3 name'>
+          {superhero.superhero.name}
+        </span>{" "}
+        Power Stats . . .
       </ModalHeader>
       <ModalBody className='bg-dark mt-0'>
+        {validationError && (
+          <Alert color='danger' className='mt-2  h6  text-red '>
+            {validationError}
+          </Alert>
+        )}
+
         {isMutating ? (
           <Alert color='info'> Loading...</Alert>
         ) : isError ? (
@@ -72,80 +60,92 @@ const UpdateForm = ({ showModal, toggle, superhero, setMore }) => {
         ) : isSuccess ? (
           <UncontrolledAlert color='success'>
             {" "}
-            Updated Success{" "}
+            Update Success{" "}
           </UncontrolledAlert>
         ) : null}
         <Form onSubmit={handleSubmit} className='form p-2 h3'>
           <FormGroup>
             <Label for='intelligence'>Intelligence</Label>
             <Input
+              name='intelligence'
               placeholder='Intelligence'
               min={0}
               max={100}
               type='number'
               step='1'
-              value={psIntelligence}
-              onChange={onIntelliChange}
+              onChange={onChangeHandler}
+              required
+              value={powerstats.intelligence}
             />
           </FormGroup>
           <FormGroup>
             <Label for='strength'>Strength</Label>
             <Input
+              name='strength'
               placeholder='Strength'
               min={0}
               max={100}
               type='number'
               step='1'
-              value={psStrength}
-              onChange={onStrengthChange}
+              onChange={onChangeHandler}
+              required
+              value={powerstats.strength}
             />
           </FormGroup>
           <FormGroup>
             <Label for='speed'>Speed</Label>
             <Input
+              name='speed'
               placeholder='Speed'
               min={0}
               max={100}
               type='number'
               step='1'
-              value={psSpeed}
-              onChange={onSpeedChange}
+              onChange={onChangeHandler}
+              required
+              value={powerstats.speed}
             />
           </FormGroup>
           <FormGroup>
             <Label for='durability'>Durability</Label>
             <Input
+              name='durability'
               placeholder='Durability'
               min={0}
               max={100}
               type='number'
               step='1'
-              value={psDurability}
-              onChange={onDurabilityChange}
+              onChange={onChangeHandler}
+              required
+              value={powerstats.durability}
             />
           </FormGroup>
           <FormGroup>
             <Label for='power'>Power</Label>
             <Input
+              name='power'
               placeholder='Power'
               min={0}
               max={100}
               type='number'
               step='1'
-              value={psPower}
-              onChange={onPowerChange}
+              onChange={onChangeHandler}
+              required
+              value={powerstats.power}
             />
           </FormGroup>
           <FormGroup>
             <Label for='combat'>Combat</Label>
             <Input
+              name='combat'
               placeholder='Combat'
               min={0}
               max={100}
               type='number'
               step='1'
-              value={psCombat}
-              onChange={onCombatChange}
+              onChange={onChangeHandler}
+              required
+              value={powerstats.combat}
             />
           </FormGroup>
           <div>

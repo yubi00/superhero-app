@@ -5,3 +5,7 @@
 .modal-header {
   font-size: 2rem;
 }
+
+.name {
+  letter-spacing: 0.1em;
+}
