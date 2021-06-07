@@ -7,7 +7,7 @@ const Favourites = () => {
   const { data, isLoading, isError, error } = useFeaturedList();
 
   if (isLoading) return <Container className='h1'>Loading...</Container>;
-  if (isError) return <Container className='h1'>{error}</Container>;
+  if (isError) return <Container className='h1'>{error.message}</Container>;
 
   return (
     <div>

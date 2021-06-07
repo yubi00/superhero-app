@@ -7,7 +7,7 @@ const {
   fetchSuperHeroes,
   deleteSuperHero
 } = require("../controllers/superheroes");
-const router = new express.Router();
+const router = express.Router();
 
 //routes to search super hero by name from superhero api
 router.get("/api/superhero/:name", searchSuperHeroByName);

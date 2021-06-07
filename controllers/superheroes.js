@@ -10,18 +10,23 @@ const searchSuperHeroByName = async (req, res) => {
     const data = await searchSuperHero(name);
     if (data.response === "error") throw new Error(data.error);
 
+    const filteredData = data.results.filter((superhero) =>
+      checkPattern(superhero.name, name)
+    );
+
+    if (filteredData.length === 0)
+      throw new Error("Character with given name not found");
+
     res.status(200).send({
       success: true,
-      data: data.results
-        .filter((superhero) => checkPattern(superhero.name, name))
-        .map((superhero) => {
-          return {
-            id: superhero.id,
-            name: superhero.name,
-            powerstats: superhero.powerstats,
-            image: superhero.image.url
-          };
-        })
+      data: filteredData.map((superhero) => {
+        return {
+          id: superhero.id,
+          name: superhero.name,
+          powerstats: superhero.powerstats,
+          image: superhero.image.url
+        };
+      })
     });
   } catch (err) {
     res.status(400).send({
@@ -35,6 +40,7 @@ const searchSuperHeroByName = async (req, res) => {
 const fetchSuperHeroes = async (req, res) => {
   try {
     const superheroes = await pool.query("SELECT * FROM superheroes");
+
     res.status(200).send({
       success: true,
       data: superheroes.rows

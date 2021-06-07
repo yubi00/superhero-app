@@ -22,5 +22,6 @@ VALUES ('{"id": "4",
       "image": "https://www.superherodb.com/pictures2/portraits/10/100/1.jpg"}');
 
 /* query to select particular superhero based on their superhero id*/
+/* ->> returns a text where as -> returns a json object field as json*/
 SELECT * FROM superheroes WHERE superhero ->> 'id' = '4';
 
