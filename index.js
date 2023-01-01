@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const { expressCspHeader } = require('express-csp-header');
 const path = require('path');
 require('dotenv').config();
@@ -15,7 +14,6 @@ app.use(
     },
   })
 );
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
