@@ -9,9 +9,10 @@ const { default: helmet } = require('helmet');
 const app = express();
 app.use(
   helmet.contentSecurityPolicy({
+    useDefaults: false,
     directives: {
-      'default-src': 'none',
-      'img-src': 'self',
+      defaultSrc: ["'none'"],
+      imgSrc: ["'self'"],
     },
   })
 );
