@@ -1,18 +1,17 @@
 const express = require('express');
 const cors = require('cors');
+const { expressCspHeader } = require('express-csp-header');
 const path = require('path');
 require('dotenv').config();
 
 const router = require('./routes/superheroes');
-const { default: helmet } = require('helmet');
 
 const app = express();
 app.use(
-  helmet.contentSecurityPolicy({
-    useDefaults: false,
-    directives: {
-      defaultSrc: ["'none'"],
-      imgSrc: ["'self'"],
+  expressCspHeader({
+    policies: {
+      'default-src': [expressCspHeader.NONE],
+      'img-src': [expressCspHeader.SELF],
     },
   })
 );
